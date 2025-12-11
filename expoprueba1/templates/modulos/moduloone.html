@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Módulo 1: Ecuaciones</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#753232",
+              "secondary": "#9E5E5E", 
+              "accent-gold": "#C9B037",
+              "light-gray": "#f7f9fa",
+              "text-primary": "#1f2937",
+              "success": "#10b981",
+              "error": "#ef4444"
+            },
+            fontFamily: {
+              "display": ["Lexend", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+    
+    <style>
+        /* --- TUS ESTILOS PERSONALIZADOS (HEADER COMPACTO) --- */
+        :root {
+            --color-text-primary: #1f2937;
+        }
+
+        .header {
+            margin-left: 2rem;
+            margin-right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.75rem; 
+            padding-bottom: 0.75rem;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo h2 {
+            font-size: 1.25rem; 
+            font-weight: 700;
+            color: var(--color-text-primary);
+            letter-spacing: -0.05em;
+            padding-left: 1rem; 
+            border-left: 2px solid #e5e7eb;
+            margin-left: 0.5rem;
+        }
+
+        .logo-icon img {
+            width: 5.5rem; 
+            height: 1.75rem; 
+            object-fit: contain;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* --- Estilos de funcionalidad --- */
+        .hidden-section { display: none; }
+        .active-section { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .transition-width { transition-property: width; transition-duration: 700ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .graph-grid {
+            background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="font-display bg-light-gray text-text-primary h-screen flex flex-col overflow-hidden">
+
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="{{ url_for('static', filename='img/DGET.png') }}" alt="Logo DGET" />
+            </div>
+            <div style="width: 1px; height: 1.25rem; background-color: #d1d5db;"></div>
+            <div class="logo-icon">
+                <img src="{{ url_for('static', filename='img/glo.png') }}" alt="Logo GLO" />
+            </div>
+            <h2>Módulo 1: Ecuaciones</h2>
+        </div>
+
+        <div class="nav-actions">
+            <div class="hidden lg:flex items-center gap-2 w-32 mr-4">
+                <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div id="module-progress-bar" class="h-full bg-success transition-width" style="width: {{ progreso }};"></div>
+                </div>
+                <span class="text-xs font-black text-success" id="module-progress-percentage">{{ progreso }}</span>
+            </div>
+
+            <a href="/" class="px-4 py-1.5 rounded-lg bg-gray-50 text-gray-600 font-bold text-xs hover:bg-primary hover:text-white transition-all border border-gray-200">
+                Inicio
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-primary hover:bg-red-100 transition-colors" title="Salir">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+            </a>
+        </div>
+    </header>
+    
+    <div class="flex flex-1 overflow-hidden w-full">
+
+        <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 flex flex-col hidden md:flex h-full shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-10">
+            <div class="p-6 flex-1 overflow-y-auto">
+                <div class="flex items-center gap-2 mb-6 text-primary border-b border-gray-100 pb-4">
+                    <span class="material-symbols-outlined text-xl">menu_book</span>
+                    <h3 class="font-bold uppercase tracking-widest text-xs">Temario</h3>
+                </div>
+                
+                <div class="relative pl-3 border-l-2 border-gray-100 space-y-1">
+                    <div class="relative py-2">
+                        <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-primary z-10" id="dot-1.1"></div>
+                        <button id="btn-1.1" onclick="switchLesson('1.1')" class="nav-btn w-full text-left pl-4 text-sm font-medium transition-colors text-primary font-bold hover:translate-x-1 transition-transform">1.1 Introducción</button>
+                    </div>
+                    <div class="relative py-2">
+                        <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10" id="dot-1.2"></div>
+                        <button id="btn-1.2" onclick="switchLesson('1.2')" class="nav-btn w-full text-left pl-4 text-sm font-medium transition-colors text-gray-400 cursor-not-allowed flex justify-between items-center group">
+                            <span>1.2 Ec. Lineales</span>
+                            <span id="lock-1.2" class="material-symbols-outlined text-xs text-gray-300">lock</span>
+                        </button>
+                    </div>
+                    <div class="relative py-2">
+                        <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10" id="dot-1.3"></div>
+                        <button id="btn-1.3" onclick="switchLesson('1.3')" class="nav-btn w-full text-left pl-4 text-sm font-medium transition-colors text-gray-400 cursor-not-allowed flex justify-between items-center group">
+                            <span>1.3 Ec. Cuadráticas</span>
+                            <span id="lock-1.3" class="material-symbols-outlined text-xs text-gray-300">lock</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-gray-50 border-t border-gray-100">
+                <div class="flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-accent-gold text-lg mt-0.5">lightbulb</span>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-0.5">Tip Rápido</p>
+                        <p class="text-xs text-gray-600 leading-snug">Completa los temas en orden para guardar tu avance.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="flex-1 overflow-y-auto p-8 scroll-smooth bg-light-gray relative">
+            
+            <div id="lesson-1.1" class="lesson-container active-section max-w-4xl mx-auto space-y-10">
+                
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="bg-accent-gold/10 text-accent-gold px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Lección 1.1</span>
+                    </div>
+                    <h2 class="text-4xl font-black text-primary mb-6">Conceptos Fundamentales</h2>
+                    <p class="text-gray-600 leading-relaxed text-lg mb-6">
+                        Una <strong>ecuación</strong> es una afirmación de igualdad. Nos dice que lo que está a la izquierda del signo <span class="font-bold text-primary">=</span> tiene el mismo valor que lo que está a la derecha.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-red-50 p-6 rounded-xl border border-red-100">
+                            <h4 class="font-bold text-red-800 mb-2">Expresión Algebraica</h4>
+                            <p class="text-sm text-red-700 mb-2">Solo números y letras. No afirma nada.</p>
+                            <div class="bg-white p-2 rounded text-center font-mono font-bold text-gray-500">2x + 5</div>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-xl border border-green-100 relative overflow-hidden">
+                            <div class="absolute top-2 right-2 text-green-200">
+                                <span class="material-symbols-outlined text-4xl">check_circle</span>
+                            </div>
+                            <h4 class="font-bold text-green-800 mb-2">Ecuación</h4>
+                            <p class="text-sm text-green-700 mb-2">Tiene un signo igual. Afirma un equilibrio.</p>
+                            <div class="bg-white p-2 rounded text-center font-mono font-bold text-primary">2x + 5 = 15</div>
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-xl text-gray-800 mb-4">La Balanza</h3>
+                    <p class="text-gray-600 mb-6">
+                        Imagina una balanza equilibrada. Si en un lado hay una incógnita <strong>x</strong> y 2kg, y en el otro hay 5kg, sabemos que la incógnita debe valer 3kg para mantener el equilibrio.
+                    </p>
+                    
+                    <div class="flex justify-center py-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                        <div class="relative w-48 h-28">
+                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-20 bg-gray-400 rounded-t-sm"></div>
+                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-2 bg-gray-400 rounded-full"></div>
+                            <div class="absolute top-6 left-0 w-48 h-2 bg-primary rounded-full"></div>
+                            <div class="absolute top-8 left-0 w-12 h-12 rounded-full border-2 border-primary bg-white flex flex-col items-center justify-center text-xs shadow-md">
+                                <span class="font-bold text-gray-800">x</span>
+                                <span class="text-[10px] text-gray-400">+ 2kg</span>
+                            </div>
+                            <div class="absolute top-8 right-0 w-12 h-12 rounded-full border-2 border-primary bg-white flex items-center justify-center text-xs shadow-md font-bold text-gray-800">
+                                5kg
+                            </div>
+                            <div class="absolute top-6 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[14px] border-b-gray-600"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:-translate-y-1 transition-transform">
+                        <div class="w-12 h-12 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center mb-4">
+                            <span class="font-bold font-mono text-2xl">x</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Incógnita</h3>
+                        <p class="text-sm text-gray-500">Valor desconocido. Usamos letras como x, y, z.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:-translate-y-1 transition-transform">
+                        <div class="w-12 h-12 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
+                            <span class="font-bold font-mono text-2xl">#</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Constante</h3>
+                        <p class="text-sm text-gray-500">Números fijos que no cambian.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:-translate-y-1 transition-transform">
+                        <div class="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
+                            <span class="font-bold font-mono text-2xl">ax</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Coeficiente</h3>
+                        <p class="text-sm text-gray-500">Número que multiplica a la incógnita.</p>
+                    </div>
+                </div>
+                
+                <form id="form-1.1" onsubmit="event.preventDefault(); validateIntro();">
+                    <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-2 bg-accent-gold/20 rounded-lg text-accent-gold">
+                                <span class="material-symbols-outlined">quiz</span>
+                            </div>
+                            <h3 class="font-bold text-gray-900 text-xl">Comprobación de Lectura</h3>
+                        </div>
+                        
+                        <p class="mb-8 text-gray-600 text-lg">
+                            En la ecuación <span class="font-mono bg-white border border-gray-200 px-3 py-1 rounded-lg text-primary font-bold shadow-sm mx-1">x + 5 = 15</span>, ¿Cuál es la incógnita?
+                        </p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                            <label class="cursor-pointer group relative">
+                                <input type="radio" name="q1_variable" value="5" class="peer sr-only">
+                                <div class="p-6 rounded-xl border-2 border-gray-100 bg-white peer-checked:border-primary peer-checked:bg-primary/5 hover:border-gray-300 transition-all text-center">
+                                    <span class="block font-bold text-2xl text-gray-400 peer-checked:text-primary mb-1">5</span>
+                                    <span class="text-xs font-bold text-gray-300 uppercase tracking-widest peer-checked:text-primary/60">Constante</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group relative">
+                                <input type="radio" name="q1_variable" value="x" class="peer sr-only">
+                                <div class="p-6 rounded-xl border-2 border-gray-100 bg-white peer-checked:border-primary peer-checked:bg-primary/5 hover:border-gray-300 transition-all text-center">
+                                    <span class="block font-bold text-2xl text-gray-400 peer-checked:text-primary mb-1">x</span>
+                                    <span class="text-xs font-bold text-gray-300 uppercase tracking-widest peer-checked:text-primary/60">Incógnita</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer group relative">
+                                <input type="radio" name="q1_variable" value="15" class="peer sr-only">
+                                <div class="p-6 rounded-xl border-2 border-gray-100 bg-white peer-checked:border-primary peer-checked:bg-primary/5 hover:border-gray-300 transition-all text-center">
+                                    <span class="block font-bold text-2xl text-gray-400 peer-checked:text-primary mb-1">15</span>
+                                    <span class="text-xs font-bold text-gray-300 uppercase tracking-widest peer-checked:text-primary/60">Resultado</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div id="feedback-1.1" class="hidden mb-6 p-4 rounded-xl items-start gap-3 text-sm font-medium border"></div>
+
+                        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-secondary transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5">
+                            Comprobar Respuesta
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-1.2" class="lesson-container hidden-section max-w-4xl mx-auto space-y-10">
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
+                    <span class="bg-accent-gold/10 text-accent-gold px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Lección 1.2</span>
+                    <h2 class="text-4xl font-black text-primary mt-4 mb-6">Ecuaciones Lineales</h2>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-8">
+                        Llamamos "lineales" a estas ecuaciones porque la incógnita está elevada a la 1. Si las graficamos, forman una <strong>línea recta</strong>.
+                    </p>
+
+                    <div class="flex flex-col lg:flex-row gap-10">
+                        <div class="flex-1 space-y-8">
+                            <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-4 text-xl">Cómo Resolver (Despejar)</h4>
+                            
+                            <div class="group">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm">1</div>
+                                    <h5 class="font-bold text-gray-800">Operaciones Inversas</h5>
+                                </div>
+                                <p class="text-gray-600 pl-12 text-sm">
+                                    Para dejar la <strong>x</strong> sola, movemos los números al otro lado haciendo lo contrario (suma ↔ resta, multiplica ↔ divide).
+                                </p>
+                            </div>
+
+                            <div class="group">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm">2</div>
+                                    <h5 class="font-bold text-gray-800">Ejemplo: 2x - 4 = 0</h5>
+                                </div>
+                                <div class="pl-12 space-y-2">
+                                    <div class="bg-gray-50 p-2 rounded border border-gray-200 font-mono text-sm text-gray-700 w-fit">2x = 4 <span class="text-gray-400 ml-2">// El 4 pasó sumando</span></div>
+                                    <div class="bg-gray-50 p-2 rounded border border-gray-200 font-mono text-sm text-gray-700 w-fit">x = 4/2 <span class="text-gray-400 ml-2">// El 2 pasó dividiendo</span></div>
+                                    <div class="bg-green-50 p-2 rounded border border-green-200 font-mono text-sm text-green-800 w-fit font-bold">x = 2</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:w-1/3 flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Gráfica f(x) = 2x - 4</span>
+                            <div class="relative w-full aspect-square graph-grid border border-gray-300 rounded-lg overflow-hidden bg-white shadow-inner">
+                                <div class="absolute top-1/2 left-0 w-full h-px bg-gray-800"></div>
+                                <div class="absolute left-1/2 top-0 h-full w-px bg-gray-800"></div>
+                                <div class="absolute w-[140%] h-1 bg-secondary top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 origin-center rotate-[35deg]"></div>
+                                <div class="absolute top-[30%] right-[25%] w-3 h-3 bg-primary rounded-full border-2 border-white shadow-sm z-10"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="form-1.2" onsubmit="event.preventDefault(); validateLinear();">
+                    <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <div class="bg-white p-10 rounded-2xl border-2 border-dashed border-gray-300 mb-8 flex flex-col items-center justify-center relative overflow-hidden">
+                            <label class="block text-sm font-bold text-gray-500 mb-4 uppercase tracking-widest">Tu Turno</label>
+                            <p class="mb-6 text-gray-700 font-medium text-xl text-center">
+                                Resuelve: <span class="text-primary font-mono font-bold">2x - 8 = 0</span>
+                            </p>
+                            <div class="flex items-center gap-4 scale-110">
+                                <span class="text-4xl font-mono font-bold text-gray-300">x =</span>
+                                <input type="number" id="q_linear_result" class="form-input text-5xl font-bold text-primary w-40 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 text-center bg-white py-3 shadow-sm transition-all placeholder-gray-100" placeholder="?">
+                            </div>
+                        </div>
+                        <div id="feedback-1.2" class="hidden mb-6 p-4 rounded-xl items-start gap-3 text-sm font-medium border"></div>
+                        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-secondary transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5">
+                            Validar Resultado
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="lesson-1.3" class="lesson-container hidden-section max-w-4xl mx-auto space-y-10">
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex flex-col md:flex-row gap-8 items-start">
+                        <div class="flex-1">
+                            <span class="bg-accent-gold/10 text-accent-gold px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Lección 1.3</span>
+                            <h2 class="text-4xl font-black text-primary mt-4 mb-4">Ecuaciones Cuadráticas</h2>
+                            <p class="text-gray-600 text-lg mb-6 leading-relaxed">
+                                Tienen la forma <span class="font-mono bg-yellow-50 px-2 py-0.5 rounded text-primary font-bold">ax² + bx + c = 0</span>. El término cuadrático (x²) crea una curva llamada <strong>Parábola</strong>.
+                            </p>
+                            
+                            <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                                <h5 class="font-bold text-blue-900 mb-2 text-sm flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-base">info</span> El Discriminante
+                                </h5>
+                                <p class="text-sm text-blue-800/80">
+                                    Lo que está dentro de la raíz <span class="font-mono font-bold">(b² - 4ac)</span> determina si hay 2 soluciones, 1 solución o ninguna solución real.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-64 bg-gray-50 rounded-xl p-6 border border-gray-200 flex flex-col items-center">
+                            <h4 class="font-bold text-gray-800 mb-4 text-sm">La Parábola</h4>
+                            <div class="relative w-48 h-48 graph-grid border border-gray-300 rounded overflow-hidden bg-white shadow-inner">
+                                 <div class="absolute top-1/2 left-0 w-full h-px bg-gray-400"></div>
+                                 <div class="absolute left-1/2 top-0 h-full w-px bg-gray-400"></div>
+                                 <div class="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-24 h-40 border-b-4 border-l-4 border-r-4 border-primary rounded-b-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-primary rounded-2xl shadow-lg shadow-primary/20 text-white overflow-hidden relative">
+                    <div class="absolute top-0 right-0 p-10 opacity-10">
+                        <span class="material-symbols-outlined text-9xl">function</span>
+                    </div>
+                    <div class="p-8 md:p-10 relative z-10 flex flex-col md:flex-row items-center gap-8">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-2">La Fórmula General</h3>
+                            <p class="text-white/80 text-sm mb-6">Herramienta universal para resolver cualquier cuadrática.</p>
+                        </div>
+                        <div class="bg-black/30 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-2xl">
+                            <span class="font-mono text-3xl font-bold tracking-wider text-center block">
+                                x = <div class="inline-block text-center align-middle">
+                                    <div class="text-lg mb-1">-b ± √(b² - 4ac)</div>
+                                    <div class="w-full h-0.5 bg-white/60"></div>
+                                    <div class="text-lg mt-1">2a</div>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="form-1.3" action="{{ url_for('lesson_submit') }}" method="POST" onsubmit="event.preventDefault(); validateQuadratic();">
+                    <input type="hidden" name="unit_id" value="1"> <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm mb-10 relative overflow-hidden mt-6">
+                        <div class="flex items-center gap-3 mb-6 relative z-10">
+                            <div class="p-2 bg-primary/10 rounded-lg text-primary">
+                                <span class="material-symbols-outlined">edit_square</span>
+                            </div>
+                            <h3 class="font-bold text-gray-900 text-xl">Práctica Final</h3>
+                        </div>
+
+                        <p class="text-gray-600 mb-8 text-base relative z-10 pl-1">
+                            Extrae los coeficientes de: <span class="font-mono bg-gray-100 px-3 py-1 rounded font-bold text-primary text-lg ml-2 border border-gray-200">3x² - 5x + 2 = 0</span>
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10 relative z-10">
+                            <div class="group">
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 ml-1">Valor de a</label>
+                                <input type="number" id="coeff_a" class="w-full p-4 rounded-xl border-gray-200 bg-gray-50 font-bold text-center focus:border-primary focus:ring-primary text-xl transition-all focus:bg-white" placeholder="?">
+                            </div>
+                            <div class="group">
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 ml-1">Valor de b</label>
+                                <input type="number" id="coeff_b" class="w-full p-4 rounded-xl border-gray-200 bg-gray-50 font-bold text-center focus:border-primary focus:ring-primary text-xl transition-all focus:bg-white" placeholder="?">
+                            </div>
+                            <div class="group">
+                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 ml-1">Valor de c</label>
+                                <input type="number" id="coeff_c" class="w-full p-4 rounded-xl border-gray-200 bg-gray-50 font-bold text-center focus:border-primary focus:ring-primary text-xl transition-all focus:bg-white" placeholder="?">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-light-gray rounded-xl p-6 border border-gray-100 relative z-10 hover:border-accent-gold/30 transition-colors">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="font-bold text-primary flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-accent-gold">emoji_events</span> 
+                                    Desafío de Concepto
+                                </p>
+                                <span class="text-[10px] bg-white border border-gray-200 px-2 py-1 rounded text-gray-400 font-bold uppercase">Requerido</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">¿Cuál ecuación <strong>NO</strong> es cuadrática?</p>
+                            <div class="space-y-3">
+                                <label class="flex items-center p-3 rounded-lg bg-white hover:bg-white hover:shadow-md cursor-pointer border border-gray-200 hover:border-primary/30 transition-all group">
+                                    <input type="radio" name="final_challenge" value="A" class="text-primary focus:ring-primary h-4 w-4 bg-gray-100 border-gray-300">
+                                    <span class="ml-3 font-mono text-gray-600 group-hover:text-primary transition-colors text-sm">x² - 4 = 0</span>
+                                </label>
+                                <label class="flex items-center p-3 rounded-lg bg-white hover:bg-white hover:shadow-md cursor-pointer border border-gray-200 hover:border-primary/30 transition-all group">
+                                    <input type="radio" name="final_challenge" value="B" class="text-primary focus:ring-primary h-4 w-4 bg-gray-100 border-gray-300">
+                                    <span class="ml-3 font-mono text-gray-600 group-hover:text-primary transition-colors text-sm">3x - 5y = 10</span>
+                                </label>
+                                <label class="flex items-center p-3 rounded-lg bg-white hover:bg-white hover:shadow-md cursor-pointer border border-gray-200 hover:border-primary/30 transition-all group">
+                                    <input type="radio" name="final_challenge" value="C" class="text-primary focus:ring-primary h-4 w-4 bg-gray-100 border-gray-300">
+                                    <span class="ml-3 font-mono text-gray-600 group-hover:text-primary transition-colors text-sm">x(x+1) = 0</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="feedback-1.3" class="hidden mt-8 p-4 rounded-xl flex items-center gap-4 text-sm font-medium border relative z-10 shadow-sm">
+                            <span class="material-symbols-outlined icon text-2xl p-2 bg-white rounded-full shadow-sm"></span>
+                            <span class="message flex-1 text-base"></span>
+                        </div>
+
+                        <button type="submit" class="mt-8 w-full py-4 bg-primary text-white text-lg font-bold rounded-xl hover:bg-secondary transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 hover:-translate-y-1 relative z-10">
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Terminar Módulo
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const completedLessons = new Set(); 
+        const unlockedLessons = new Set(['1.1']); 
+        const totalLessons = 3; 
+
+        function updateModuleProgress(lessonId) {
+            if (completedLessons.has(lessonId)) return;
+            completedLessons.add(lessonId); 
+            const currentCompleted = completedLessons.size;
+            let percentage = Math.round((currentCompleted / totalLessons) * 100);
+            
+            const progressDisplay = document.getElementById('module-progress-percentage');
+            const progressBar = document.getElementById('module-progress-bar');
+            
+            if (progressDisplay) progressDisplay.textContent = `${percentage}%`;
+            if (progressBar) progressBar.style.width = `${percentage}%`; 
+        }
+
+        function unlockNextLesson(nextLessonId) {
+            if (!unlockedLessons.has(nextLessonId)) {
+                unlockedLessons.add(nextLessonId);
+                const btn = document.getElementById('btn-' + nextLessonId);
+                const lock = document.getElementById('lock-' + nextLessonId);
+                
+                if (btn) {
+                    btn.classList.remove('text-gray-400', 'cursor-not-allowed');
+                    btn.classList.add('text-gray-500', 'hover:text-primary', 'hover:translate-x-1');
+                    btn.animate([
+                        { transform: 'scale(1)', color: '#10b981' },
+                        { transform: 'scale(1.05)' },
+                        { transform: 'scale(1)', color: '#6b7280' }
+                    ], { duration: 500 });
+                }
+                if (lock) {
+                    lock.textContent = 'lock_open';
+                    setTimeout(() => lock.style.display = 'none', 1000);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressPercentageText = document.getElementById('module-progress-percentage');
+            if (progressPercentageText && progressPercentageText.textContent.startsWith('100')) {
+                ['1.1', '1.2', '1.3'].forEach(id => {
+                    completedLessons.add(id);
+                    unlockNextLesson(id);
+                });
+            }
+            switchLesson('1.1');
+        });
+
+        function switchLesson(lessonId) {
+            if (!unlockedLessons.has(lessonId)) {
+                const btn = document.getElementById('btn-' + lessonId);
+                if(btn) {
+                    btn.animate([
+                        { transform: 'translateX(0)' },
+                        { transform: 'translateX(-4px)' },
+                        { transform: 'translateX(4px)' },
+                        { transform: 'translateX(0)' }
+                    ], { duration: 300 });
+                }
+                return; 
+            }
+            document.querySelectorAll('.lesson-container').forEach(el => {
+                el.classList.add('hidden-section');
+                el.classList.remove('active-section');
+            });
+            const target = document.getElementById('lesson-' + lessonId);
+            if(target) {
+                target.classList.remove('hidden-section');
+                target.classList.add('active-section');
+            }
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (unlockedLessons.has(btn.id.replace('btn-', ''))) {
+                    btn.classList.remove('text-primary', 'font-bold');
+                    btn.classList.add('text-gray-500');
+                }
+                const dot = btn.previousElementSibling;
+                if(dot) {
+                    dot.classList.remove('border-primary');
+                    dot.classList.add('border-gray-300');
+                }
+            });
+            const activeBtn = document.getElementById('btn-' + lessonId);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-gray-500');
+                activeBtn.classList.add('text-primary', 'font-bold');
+                const dot = activeBtn.previousElementSibling;
+                if(dot) {
+                    dot.classList.remove('border-gray-300');
+                    dot.classList.add('border-primary');
+                }
+            }
+        }
+
+        function validateIntro() {
+            const formData = new FormData(document.getElementById('form-1.1'));
+            const answer = formData.get('q1_variable');
+            const feedback = document.getElementById('feedback-1.1');
+            feedback.className = "hidden mb-6 p-4 rounded-xl flex items-start gap-3 text-sm font-medium border"; 
+            if (answer === 'x') {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-green-50', 'text-green-800', 'border-green-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-green-600 text-2xl">check_circle</span> <div><strong>¡Correcto!</strong> La "x" es la incógnita.</div>';
+                updateModuleProgress('1.1'); 
+                unlockNextLesson('1.2');
+                setTimeout(() => switchLesson('1.2'), 2000); 
+            } else {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-red-600 text-2xl">cancel</span> <div><strong>Incorrecto.</strong> Busca la letra, no los números.</div>';
+            }
+        }
+
+        function validateLinear() {
+            const inputVal = document.getElementById('q_linear_result').value;
+            const feedback = document.getElementById('feedback-1.2');
+            feedback.className = "hidden mb-6 p-4 rounded-xl flex items-start gap-3 text-sm font-medium border"; 
+            if (parseInt(inputVal) === 4) {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-green-50', 'text-green-800', 'border-green-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-green-600 text-2xl">check_circle</span> <div><strong>¡Excelente!</strong> x = 4.</div>';
+                updateModuleProgress('1.2'); 
+                unlockNextLesson('1.3');
+                setTimeout(() => switchLesson('1.3'), 2000); 
+            } else {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-red-600 text-2xl">cancel</span> <div><strong>Intenta de nuevo.</strong> Suma 8 y divide por 2.</div>';
+            }
+        }
+
+        function validateQuadratic() {
+            const form = document.getElementById('form-1.3');
+            const a = document.getElementById('coeff_a').value;
+            const b = document.getElementById('coeff_b').value;
+            const c = document.getElementById('coeff_c').value;
+            const challenge = document.querySelector('input[name="final_challenge"]:checked');
+            const feedback = document.getElementById('feedback-1.3');
+            const icon = feedback.querySelector('.icon');
+            const msg = feedback.querySelector('.message');
+            feedback.className = "mt-8 p-4 rounded-xl flex items-center gap-4 text-sm font-medium border relative z-10 shadow-sm";
+            feedback.classList.remove('hidden');
+
+            let isCoeffCorrect = (a == 3 && b == -5 && c == 2);
+
+            if (isCoeffCorrect) {
+                if (challenge && challenge.value === 'B') {
+                    updateModuleProgress('1.3'); 
+                    const hiddenSuccess = document.createElement("input");
+                    hiddenSuccess.type = "hidden";
+                    hiddenSuccess.name = "module_completed";
+                    hiddenSuccess.value = "true";
+                    form.appendChild(hiddenSuccess);
+                    feedback.classList.add('bg-green-50', 'border-green-200', 'text-green-800');
+                    icon.innerText = "workspace_premium";
+                    msg.innerHTML = "<strong>¡Módulo Completado!</strong> Guardando progreso...";
+                    setTimeout(() => { form.submit(); }, 1500);
+                    return; 
+                }
+                feedback.classList.add('bg-yellow-50', 'border-yellow-200', 'text-yellow-800');
+                icon.innerText = "lightbulb";
+                msg.innerText = "Coeficientes bien, pero el desafío final es incorrecto.";
+                return;
+            }
+            feedback.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
+            icon.innerText = "error";
+            msg.innerText = "Coeficientes incorrectos. Revisa los signos.";
+        }
+    </script>
+</body>
+</html>
