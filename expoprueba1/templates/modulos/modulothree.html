@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Módulo 3: Geometría</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#753232",
+              "secondary": "#9E5E5E", 
+              "accent-gold": "#C9B037",
+              "light-gray": "#f7f9fa",
+              "text-primary": "#1f2937",
+              "success": "#10b981",
+              "error": "#ef4444"
+            },
+            fontFamily: {
+              "display": ["Lexend", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+    
+    <style>
+        /* --- TUS ESTILOS PERSONALIZADOS (HEADER COMPACTO) --- */
+        :root {
+            --color-text-primary: #1f2937;
+        }
+
+        .header {
+            margin-left: 2rem;
+            margin-right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.75rem; 
+            padding-bottom: 0.75rem;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo h2 {
+            font-size: 1.25rem; 
+            font-weight: 700;
+            color: var(--color-text-primary);
+            letter-spacing: -0.05em;
+            padding-left: 1rem; 
+            border-left: 2px solid #e5e7eb;
+            margin-left: 0.5rem;
+        }
+
+        .logo-icon img {
+            width: 5.5rem; 
+            height: 1.75rem; 
+            object-fit: contain;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* --- Estilos de funcionalidad --- */
+        .hidden-section { display: none; }
+        .active-section { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .transition-width { transition-property: width; transition-duration: 700ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .graph-grid {
+            background-image: linear-gradient(#e5e7eb 1px, transparent 1px), linear-gradient(90deg, #e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Cubo 3D CSS Simple */
+        .cube {
+            width: 50px; height: 50px;
+            background-color: #753232;
+            position: relative;
+            transform: rotateX(-20deg) rotateY(-30deg);
+            transform-style: preserve-3d;
+            margin: 20px;
+        }
+        .cube::before {
+            content: ''; position: absolute; top: -10px; left: 10px;
+            width: 50px; height: 10px; background-color: #9E5E5E;
+            transform: skewX(-45deg);
+        }
+        .cube::after {
+            content: ''; position: absolute; top: 5px; left: 50px;
+            width: 10px; height: 50px; background-color: #5a2626;
+            transform: skewY(-45deg);
+        }
+    </style>
+</head>
+<body class="font-display bg-light-gray text-text-primary h-screen flex flex-col overflow-hidden">
+
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <img src="{{ url_for('static', filename='img/DGET.png') }}" alt="Logo DGET" />
+            </div>
+            <div style="width: 1px; height: 1.25rem; background-color: #d1d5db;"></div>
+            <div class="logo-icon">
+                <img src="{{ url_for('static', filename='img/glo.png') }}" alt="Logo GLO" />
+            </div>
+            <h2>Módulo 3: Geometría</h2>
+        </div>
+
+        <div class="nav-actions">
+            <div class="hidden lg:flex items-center gap-2 w-32 mr-4">
+                <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div id="module-progress-bar" class="h-full bg-success transition-width" style="width: {{ progreso }};"></div>
+                </div>
+                <span class="text-xs font-black text-success" id="module-progress-percentage">{{ progreso }}</span>
+            </div>
+
+            <a href="/" class="px-4 py-1.5 rounded-lg bg-gray-50 text-gray-600 font-bold text-xs hover:bg-primary hover:text-white transition-all border border-gray-200">
+                Inicio
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-primary hover:bg-red-100 transition-colors" title="Salir">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+            </a>
+        </div>
+    </header>
+    
+    <div class="flex flex-1 overflow-hidden w-full">
+
+        <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 flex flex-col hidden md:flex h-full shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-10">
+            <div class="p-6 flex-1 overflow-y-auto">
+                <div class="flex items-center gap-2 mb-6 text-primary border-b border-gray-100 pb-4">
+                    <span class="material-symbols-outlined text-xl">architecture</span>
+                    <h3 class="font-bold uppercase tracking-widest text-xs">Temario</h3>
+                </div>
+                
+                <div class="relative pl-3 border-l-2 border-gray-100 space-y-1">
+                    <div class="relative py-2">
+                        <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-primary z-10" id="dot-3.1"></div>
+                        <button id="btn-3.1" onclick="switchLesson('3.1')" class="nav-btn w-full text-left pl-4 text-sm font-medium transition-colors text-primary font-bold hover:translate-x-1 transition-transform">
+                            3.1 Perímetro y Área
+                        </button>
+                    </div>
+
+                    <div class="relative py-2">
+                        <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10" id="dot-3.2"></div>
+                        <button id="btn-3.2" onclick="switchLesson('3.2')" class="nav-btn w-full text-left pl-4 text-sm font-medium transition-colors text-gray-400 cursor-not-allowed flex justify-between items-center group">
+                            <span>3.2 Triángulos</span>
+                            <span id="lock-3.2" class="material-symbols-outlined text-xs text-gray-300">lock</span>
+                        </button>
+                    </div>
+
+                    <div class="relative py-2">
+                        <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10" id="dot-3.3"></div>
+                        <button id="btn-3.3" onclick="switchLesson('3.3')" class="nav-btn w-full text-left pl-4 text-sm font-medium transition-colors text-gray-400 cursor-not-allowed flex justify-between items-center group">
+                            <span>3.3 Volumen (3D)</span>
+                            <span id="lock-3.3" class="material-symbols-outlined text-xs text-gray-300">lock</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-gray-50 border-t border-gray-100">
+                <div class="flex gap-3 items-start">
+                    <span class="material-symbols-outlined text-accent-gold text-lg mt-0.5">lightbulb</span>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-0.5">Tip Rápido</p>
+                        <p class="text-xs text-gray-600 leading-snug">Visualiza las figuras en tu mente antes de calcular.</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="flex-1 overflow-y-auto p-8 scroll-smooth bg-light-gray relative">
+            
+            <div id="lesson-3.1" class="lesson-container active-section max-w-4xl mx-auto space-y-10">
+                
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="bg-accent-gold/10 text-accent-gold px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Lección 3.1</span>
+                    </div>
+                    <h2 class="text-4xl font-black text-primary mb-6">El Espacio Plano (2D)</h2>
+                    
+                    <p class="text-gray-600 leading-relaxed text-lg mb-8">
+                        Cuando trabajamos en una hoja de papel (dos dimensiones), hay dos medidas fundamentales que no debemos confundir: el contorno y el relleno.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-blue-700 bg-white p-2 rounded-lg shadow-sm">check_box_outline_blank</span>
+                                <h4 class="font-bold text-blue-900 text-lg">Perímetro</h4>
+                            </div>
+                            <p class="text-sm text-blue-800/80 leading-relaxed">
+                                Es la distancia alrededor de la figura. Imagina que quieres poner una <strong>valla</strong> alrededor de un jardín. Mides solo el borde.
+                            </p>
+                            <div class="w-full h-24 border-4 border-blue-500 border-dashed rounded-lg flex items-center justify-center text-blue-500 font-bold bg-white/50">
+                                Borde (L + L + L + L)
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 p-6 rounded-xl border border-green-100 flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-green-700 bg-white p-2 rounded-lg shadow-sm">format_paint</span>
+                                <h4 class="font-bold text-green-900 text-lg">Área</h4>
+                            </div>
+                            <p class="text-sm text-green-800/80 leading-relaxed">
+                                Es la cantidad de espacio dentro de la figura. Imagina que quieres poner <strong>pasto</strong> en el jardín. Mides la superficie interna.
+                            </p>
+                            <div class="w-full h-24 bg-green-200 rounded-lg flex items-center justify-center text-green-800 font-bold border border-green-300">
+                                Superficie (L x L)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="form-3.1" onsubmit="event.preventDefault(); validatePerimeter();">
+                    <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <div class="flex items-center gap-3 mb-10">
+                            <div class="p-2 bg-accent-gold/20 rounded-lg text-accent-gold">
+                                <span class="material-symbols-outlined">straighten</span>
+                            </div>
+                            <h3 class="font-bold text-gray-900 text-xl">Práctica de Concepto</h3>
+                        </div>
+                        
+                        <div class="flex flex-col md:flex-row gap-12  items-center mb-10">
+                            <div class="w-32 h-32 border-4 border-primary bg-white flex items-center justify-center relative shadow-sm">
+                                <span class="absolute -top-6 text-gray-500 text-xs font-bold">5 cm</span>
+                                <span class="absolute -right-10 text-gray-500 text-xs font-bold top-1/2 -translate-y-1/2">5 cm</span>
+                                <span class="text-primary/20 font-bold text-4xl">?</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="mb-4 text-gray-600 text-lg">
+                                    Tienes un cuadrado perfecto donde cada lado mide <strong>5 cm</strong>. 
+                                    <br>Calcula el <strong>Perímetro</strong> (la suma de todos sus lados).
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl font-mono font-bold text-gray-400">P =</span>
+                                    <input type="number" id="q_perimeter_result" class="form-input text-3xl font-bold text-primary w-32 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 text-center bg-white py-2 shadow-sm transition-all placeholder-gray-100" placeholder="cm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="feedback-3.1" class="hidden mb-6 p-4 rounded-xl items-start gap-3 text-sm font-medium border"></div>
+
+                        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-secondary transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5">
+                            Validar Perímetro
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-3.2" class="lesson-container hidden-section max-w-4xl mx-auto space-y-10">
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
+                    <span class="bg-accent-gold/10 text-accent-gold px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Lección 3.2</span>
+                    <h2 class="text-4xl font-black text-primary mt-4 mb-6">El Área del Triángulo</h2>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-8">
+                        El triángulo es la mitad de un rectángulo. Por eso su fórmula de área es tan parecida, pero dividida por dos.
+                    </p>
+
+                    <div class="flex flex-col md:flex-row gap-10 items-center">
+                        <div class="bg-primary text-white p-8 rounded-2xl shadow-lg relative overflow-hidden flex-1 w-full">
+                            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                            <h3 class="font-mono text-2xl font-bold mb-4 border-b border-white/20 pb-2 inline-block">Fórmula</h3>
+                            <div class="text-center my-4">
+                                <span class="text-4xl font-bold">A = (b • h) / 2</span>
+                            </div>
+                            <div class="flex justify-around text-sm text-white/80 mt-6">
+                                <span><strong>b</strong> = Base</span>
+                                <span><strong>h</strong> = Altura</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-1/3 flex flex-col items-center justify-center bg-gray-50 rounded-2xl p-6 border border-gray-200 h-64">
+                            <div class="relative w-40 h-40">
+                                <div class="w-0 h-0 border-l-[80px] border-l-transparent border-r-[80px] border-r-transparent border-b-[140px] border-b-secondary/80 mx-auto filter drop-shadow-sm"></div>
+                                <div class="absolute left-1/2 top-[20px] bottom-0 w-0.5 bg-gray-800 border-dashed h-[140px] -translate-x-1/2"></div>
+                                <span class="absolute bottom-[-20px] left-1/2 -translate-x-1/2 font-bold text-gray-600">Base (b)</span>
+                                <span class="absolute top-[60px] left-[55%] font-bold text-gray-800 bg-white px-1 rounded text-xs">Altura (h)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="form-3.2" onsubmit="event.preventDefault(); validateTriangle();">
+                    <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <div class="bg-white p-8 rounded-2xl border-2 border-dashed border-gray-300 mb-8 flex flex-col items-center justify-center text-center">
+                            <label class="block text-sm font-bold text-gray-500 mb-4 uppercase tracking-widest">Calculadora Rápida</label>
+                            <p class="mb-6 text-gray-700 font-medium text-lg">
+                                Si un triángulo tiene una base de <strong>10m</strong> y una altura de <strong>5m</strong>,<br> ¿Cuál es su área?
+                            </p>
+                            
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl font-mono font-bold text-gray-300">A =</span>
+                                <input type="number" id="q_triangle_result" class="form-input text-4xl font-bold text-primary w-32 rounded-xl border-2 border-gray-200 focus:border-primary focus:ring-4 focus:ring-primary/10 text-center bg-white py-2 shadow-sm transition-all placeholder-gray-100" placeholder="?">
+                                <span class="text-xl font-bold text-gray-400">m²</span>
+                            </div>
+                        </div>
+
+                        <div id="feedback-3.2" class="hidden mb-6 p-4 rounded-xl items-start gap-3 text-sm font-medium border"></div>
+
+                        <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-secondary transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5">
+                            Verificar Área
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="lesson-3.3" class="lesson-container hidden-section max-w-4xl mx-auto space-y-10">
+                
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex flex-col md:flex-row gap-8 items-start">
+                        <div class="flex-1">
+                            <span class="bg-accent-gold/10 text-accent-gold px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Lección 3.3</span>
+                            <h2 class="text-4xl font-black text-primary mt-4 mb-4">Volumen (3D)</h2>
+                            <p class="text-gray-600 text-lg mb-6 leading-relaxed">
+                                Dejamos el plano y entramos al mundo real de tres dimensiones. El volumen mide cuánto espacio ocupa un objeto. Ahora tenemos Largo, Ancho y <strong>Alto</strong>.
+                            </p>
+                            
+                            <div class="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                                <h5 class="font-bold text-orange-900 text-lg mb-2">El Cubo</h5>
+                                <p class="text-sm text-orange-800/80 mb-4">
+                                    En un cubo, todos los lados son iguales. Su fórmula de volumen es simplemente el lado multiplicado tres veces.
+                                </p>
+                                <div class="font-mono bg-white p-3 rounded-lg text-center font-bold text-orange-700 border border-orange-200">
+                                    V = Lado³
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-64 bg-gray-50 rounded-xl p-6 border border-gray-200 flex flex-col items-center justify-center">
+                            <h4 class="font-bold text-gray-800 mb-8 text-xs uppercase tracking-widest">Objeto 3D</h4>
+                            <div class="cube"></div>
+                            <p class="text-[10px] text-gray-400 mt-6 text-center">
+                                Tiene 3 dimensiones: Largo, Ancho y Profundidad.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="form-3.3" action="{{ url_for('lesson_submit') }}" method="POST" onsubmit="event.preventDefault(); validateUnit3();">
+                    <input type="hidden" name="unit_id" value="3">
+                    
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm mb-10 relative overflow-hidden">
+                        
+                        <div class="flex items-center gap-3 mb-6 relative z-10">
+                            <div class="p-2 bg-primary/10 rounded-lg text-primary">
+                                <span class="material-symbols-outlined">emoji_events</span>
+                            </div>
+                            <h3 class="font-bold text-gray-900 text-xl">Examen Final de Geometría</h3>
+                        </div>
+
+                        <p class="text-gray-600 mb-8 text-base relative z-10">
+                            Para cerrar el módulo, confirma que has entendido la diferencia fundamental entre Área y Volumen.
+                            <br><strong>¿En qué unidades se mide el Volumen?</strong>
+                        </p>
+                        
+                        <div class="space-y-4 relative z-10 mb-8">
+                            <label class="flex items-center p-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-primary/30 transition-all cursor-pointer group shadow-sm">
+                                <input type="radio" name="q_geo" value="A" class="text-primary focus:ring-primary h-5 w-5 bg-gray-100 border-gray-300">
+                                <span class="ml-4 text-gray-600 group-hover:text-primary transition-colors">Unidades Cuadradas (m²)</span>
+                            </label>
+                            <label class="flex items-center p-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-primary/30 transition-all cursor-pointer group shadow-sm">
+                                <input type="radio" name="q_geo" value="B" class="text-primary focus:ring-primary h-5 w-5 bg-gray-100 border-gray-300">
+                                <span class="ml-4 text-gray-600 group-hover:text-primary transition-colors">Unidades Cúbicas (m³)</span>
+                            </label>
+                            <label class="flex items-center p-4 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-primary/30 transition-all cursor-pointer group shadow-sm">
+                                <input type="radio" name="q_geo" value="C" class="text-primary focus:ring-primary h-5 w-5 bg-gray-100 border-gray-300">
+                                <span class="ml-4 text-gray-600 group-hover:text-primary transition-colors">Unidades Lineales (m)</span>
+                            </label>
+                        </div>
+
+                        <div id="feedback-3.3" class="hidden mt-4 p-4 rounded-xl flex items-center gap-4 text-sm font-medium border relative z-10 shadow-sm">
+                            <span class="material-symbols-outlined icon text-2xl p-2 bg-white rounded-full shadow-sm"></span>
+                            <span class="message flex-1 text-base"></span>
+                        </div>
+
+                        <button type="submit" class="mt-4 w-full py-4 bg-primary text-white text-lg font-bold rounded-xl hover:bg-secondary transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 hover:-translate-y-1 relative z-10">
+                            <span class="material-symbols-outlined">check_circle</span>
+                            Terminar Módulo 3
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN ---
+        const completedLessons = new Set(); 
+        const unlockedLessons = new Set(['3.1']); // Solo 3.1 abierto al inicio
+        const totalLessons = 3; 
+
+        function updateModuleProgress(lessonId) {
+            if (completedLessons.has(lessonId)) return;
+            completedLessons.add(lessonId); 
+            const currentCompleted = completedLessons.size;
+            let percentage = Math.round((currentCompleted / totalLessons) * 100);
+            
+            const progressDisplay = document.getElementById('module-progress-percentage');
+            const progressBar = document.getElementById('module-progress-bar');
+            
+            if (progressDisplay) progressDisplay.textContent = `${percentage}%`;
+            if (progressBar) progressBar.style.width = `${percentage}%`; 
+        }
+
+        // --- DESBLOQUEO ---
+        function unlockNextLesson(nextLessonId) {
+            if (!unlockedLessons.has(nextLessonId)) {
+                unlockedLessons.add(nextLessonId);
+                
+                const btn = document.getElementById('btn-' + nextLessonId);
+                const lock = document.getElementById('lock-' + nextLessonId);
+                
+                if (btn) {
+                    btn.classList.remove('text-gray-400', 'cursor-not-allowed');
+                    btn.classList.add('text-gray-500', 'hover:text-primary', 'hover:translate-x-1');
+                    btn.animate([
+                        { transform: 'scale(1)', color: '#10b981' },
+                        { transform: 'scale(1.05)' },
+                        { transform: 'scale(1)', color: '#6b7280' }
+                    ], { duration: 500 });
+                }
+                if (lock) {
+                    lock.textContent = 'lock_open';
+                    setTimeout(() => lock.style.display = 'none', 1000);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressPercentageText = document.getElementById('module-progress-percentage');
+            if (progressPercentageText && progressPercentageText.textContent.startsWith('100')) {
+                ['3.1', '3.2', '3.3'].forEach(id => {
+                    completedLessons.add(id);
+                    unlockNextLesson(id);
+                });
+            }
+            switchLesson('3.1');
+        });
+
+        // --- NAVEGACIÓN ---
+        function switchLesson(lessonId) {
+            if (!unlockedLessons.has(lessonId)) {
+                const btn = document.getElementById('btn-' + lessonId);
+                if(btn) {
+                    btn.animate([
+                        { transform: 'translateX(0)' },
+                        { transform: 'translateX(-4px)' },
+                        { transform: 'translateX(4px)' },
+                        { transform: 'translateX(0)' }
+                    ], { duration: 300 });
+                }
+                return; 
+            }
+
+            document.querySelectorAll('.lesson-container').forEach(el => {
+                el.classList.add('hidden-section');
+                el.classList.remove('active-section');
+            });
+            const target = document.getElementById('lesson-' + lessonId);
+            if(target) {
+                target.classList.remove('hidden-section');
+                target.classList.add('active-section');
+            }
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (unlockedLessons.has(btn.id.replace('btn-', ''))) {
+                    btn.classList.remove('text-primary', 'font-bold');
+                    btn.classList.add('text-gray-500');
+                }
+                const dot = btn.previousElementSibling;
+                if(dot) {
+                    dot.classList.remove('border-primary');
+                    dot.classList.add('border-gray-300');
+                }
+            });
+
+            const activeBtn = document.getElementById('btn-' + lessonId);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-gray-500');
+                activeBtn.classList.add('text-primary', 'font-bold');
+                const dot = activeBtn.previousElementSibling;
+                if(dot) {
+                    dot.classList.remove('border-gray-300');
+                    dot.classList.add('border-primary');
+                }
+            }
+        }
+
+        // --- VALIDACIONES MÓDULO 3 ---
+
+        function validatePerimeter() {
+            const inputVal = document.getElementById('q_perimeter_result').value;
+            const feedback = document.getElementById('feedback-3.1');
+            
+            feedback.className = "hidden mb-6 p-4 rounded-xl flex items-start gap-3 text-sm font-medium border"; 
+
+            if (parseInt(inputVal) === 20) { // 5 + 5 + 5 + 5
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-green-50', 'text-green-800', 'border-green-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-green-600 text-2xl">check_circle</span> <div><strong>¡Correcto!</strong> 5 x 4 lados = 20 cm.</div>';
+                
+                updateModuleProgress('3.1'); 
+                unlockNextLesson('3.2');
+                setTimeout(() => switchLesson('3.2'), 2000); 
+            } else {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-red-600 text-2xl">cancel</span> <div><strong>Intenta de nuevo.</strong> Suma los 4 lados de 5cm.</div>';
+            }
+        }
+
+        function validateTriangle() {
+            const inputVal = document.getElementById('q_triangle_result').value;
+            const feedback = document.getElementById('feedback-3.2');
+            
+            feedback.className = "hidden mb-6 p-4 rounded-xl flex items-start gap-3 text-sm font-medium border"; 
+
+            if (parseInt(inputVal) === 25) { // (10 * 5) / 2 = 25
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-green-50', 'text-green-800', 'border-green-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-green-600 text-2xl">check_circle</span> <div><strong>¡Exacto!</strong> (10 • 5) / 2 = 25 m².</div>';
+                
+                updateModuleProgress('3.2'); 
+                unlockNextLesson('3.3');
+                setTimeout(() => switchLesson('3.3'), 2000); 
+            } else {
+                feedback.classList.remove('hidden');
+                feedback.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                feedback.innerHTML = '<span class="material-symbols-outlined text-red-600 text-2xl">cancel</span> <div><strong>No olvides dividir.</strong> Multiplica base por altura y divide entre 2.</div>';
+            }
+        }
+
+        function validateUnit3() {
+            const form = document.getElementById('form-3.3');
+            const answer = document.querySelector('input[name="q_geo"]:checked');
+            const feedback = document.getElementById('feedback-3.3');
+            const icon = feedback.querySelector('.icon');
+            const msg = feedback.querySelector('.message');
+
+            feedback.className = "mt-4 p-4 rounded-xl flex items-center gap-4 text-sm font-medium border relative z-10 shadow-sm";
+            feedback.classList.remove('hidden');
+
+            if (answer && answer.value === 'B') {
+                updateModuleProgress('3.3'); 
+                
+                const hiddenSuccess = document.createElement("input");
+                hiddenSuccess.type = "hidden";
+                hiddenSuccess.name = "module_completed";
+                hiddenSuccess.value = "true";
+                form.appendChild(hiddenSuccess);
+
+                feedback.classList.add('bg-green-50', 'border-green-200', 'text-green-800');
+                icon.innerText = "workspace_premium";
+                msg.innerHTML = "<strong>¡Felicidades!</strong> Módulo de Geometría completado. Guardando...";
+
+                setTimeout(() => form.submit(), 1500);
+            } else {
+                feedback.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
+                icon.innerText = "error";
+                msg.innerText = "Incorrecto. Recuerda que el volumen tiene 3 dimensiones (Cúbico).";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">
+            <img src="{{ url_for('static', filename='img/DGET.png') }}" alt="imagen de logo" />
+        </div>
+        <div class="logo-separator"></div>
+         <div class="logo-icon">
+            <img src="{{ url_for('static', filename='img/glo.png') }}" alt="imagen de logo" />
+        </div>
+        <h2>
+           
+        </h2>
+    </div>
+    <div class="nav-actions">
+        <a href="/" class="btn btn-secondary">Inicio</a>
+    </div>
+<style>
+    .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.5rem 5rem 2rem 5rem; 
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    height: 60px; 
+}
+</style>
+</header>
