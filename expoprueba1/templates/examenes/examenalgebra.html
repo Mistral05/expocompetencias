@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Examen Final de Matemáticas</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { "primary": "#753232", "secondary": "#9E5E5E", "accent-gold": "#C9B037", "light-gray": "#f7f9fa", "text-primary": "#1f2937", "success": "#10b981", "error": "#ef4444" },
+            fontFamily: { "display": ["Lexend", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+    
+    <style>
+        :root { --color-text-primary: #1f2937; }
+        .header { margin: 0 2rem; display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; background-color: white; border-bottom: 1px solid #e5e7eb; }
+        .nav-actions { display: flex; gap: 0.5rem; align-items: center; }
+        .hidden-section { display: none; }
+        .active-section { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .transition-width { transition-property: width; transition-duration: 700ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-btn.active { color: #753232; font-weight: bold; }
+        .nav-dot.active { border-color: #753232; }
+    </style>
+</head>
+<body class="font-display bg-light-gray text-text-primary h-screen flex flex-col overflow-hidden">
+
+    <header class="header">
+        <div class="flex items-center gap-3">
+            <h2 class="text-xl font-bold text-primary border-l-2 border-gray-200 pl-4">Examen Final</h2>
+        </div>
+        <div class="nav-actions">
+            <div class="hidden lg:flex items-center gap-2 w-32 mr-4">
+                <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div id="module-progress-bar" class="h-full bg-success transition-width" style="width: 0%;"></div>
+                </div>
+                <span class="text-xs font-black text-success" id="module-progress-percentage">0%</span>
+            </div>
+            <a href="/" class="px-4 py-1.5 rounded-lg bg-gray-50 text-gray-600 font-bold text-xs hover:bg-primary hover:text-white transition-all border border-gray-200">Salir</a>
+        </div>
+    </header>
+    
+    <div class="flex flex-1 overflow-hidden w-full">
+
+        <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col h-full shadow-sm z-10 overflow-y-auto">
+            <div class="p-6">
+                <h3 class="font-bold uppercase tracking-widest text-xs text-primary mb-4 border-b pb-2">Navegación</h3>
+                <div class="relative pl-3 border-l-2 border-gray-100 space-y-1">
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-primary z-10 nav-dot active"></div><button id="btn-1" onclick="switchLesson(1)" class="nav-btn active text-left pl-4 text-sm font-medium w-full">1. Funciones</button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-2" onclick="switchLesson(2)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">2. Área Triángulo <span id="lock-2" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-3" onclick="switchLesson(3)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">3. Perímetro <span id="lock-3" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-4" onclick="switchLesson(4)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">4. Recta (b) <span id="lock-4" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-5" onclick="switchLesson(5)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">5. Pendiente (m) <span id="lock-5" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-6" onclick="switchLesson(6)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">6. Gráfica <span id="lock-6" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-7" onclick="switchLesson(7)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">7. Lado Cuadrado <span id="lock-7" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-8" onclick="switchLesson(8)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">8. Pendiente Neg. <span id="lock-8" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-9" onclick="switchLesson(9)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">9. Despeje Base <span id="lock-9" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                    <div class="relative py-2"><div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-300 z-10 nav-dot"></div><button id="btn-10" onclick="switchLesson(10)" class="nav-btn text-gray-400 text-left pl-4 text-sm font-medium w-full cursor-not-allowed">10. Signos <span id="lock-10" class="material-symbols-outlined text-[10px] float-right">lock</span></button></div>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="flex-1 overflow-y-auto p-8 bg-light-gray relative">
+            
+            <div id="lesson-1" class="lesson-container active-section max-w-3xl mx-auto">
+                <form id="form-1" onsubmit="event.preventDefault(); submitAnswer(1, '7');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">1. Evaluación de Funciones</h3>
+                        <p class="text-lg text-gray-700 mb-6">Si tenemos <span class="font-mono bg-gray-100 px-2 rounded">f(x) = 3x - 5</span>, ¿cuál es el valor de <strong>f(4)</strong>?</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_1" value="7" class="mr-2">7</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_1" value="-7" class="mr-2">-7</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_1" value="17" class="mr-2">17</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_1" value="1" class="mr-2">1</label>
+                        </div>
+                        <div id="feedback-1" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-1" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-2" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-2" onsubmit="event.preventDefault(); submitAnswer(2, '30');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">2. Geometría: Área</h3>
+                        <p class="text-lg text-gray-700 mb-6">¿Cuál es el área de un triángulo con base <strong>10 cm</strong> y altura <strong>6 cm</strong>?</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_2" value="60" class="mr-2">60 cm²</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_2" value="30" class="mr-2">30 cm²</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_2" value="16" class="mr-2">16 cm²</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_2" value="32" class="mr-2">32 cm²</label>
+                        </div>
+                        <div id="feedback-2" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-2" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-3" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-3" onsubmit="event.preventDefault(); submitAnswer(3, '20');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">3. Geometría: Perímetro</h3>
+                        <p class="text-lg text-gray-700 mb-6">Calcula el perímetro de un cuadrado cuyos lados miden <strong>5 m</strong>.</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_3" value="25" class="mr-2">25 m</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_3" value="10" class="mr-2">10 m</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_3" value="15" class="mr-2">15 m</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_3" value="20" class="mr-2">20 m</label>
+                        </div>
+                        <div id="feedback-3" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-3" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-4" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-4" onsubmit="event.preventDefault(); submitAnswer(4, 'b');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">4. Ecuación de la Recta</h3>
+                        <p class="text-lg text-gray-700 mb-6">En <span class="font-mono bg-gray-100 px-2 rounded">y = 2x + 3</span>, ¿qué representa el número 3?</p>
+                        <div class="space-y-3 mb-6">
+                            <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_4" value="m" class="mr-3">La pendiente</label>
+                            <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_4" value="b" class="mr-3">Intersección con eje Y (ordenada al origen)</label>
+                            <label class="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_4" value="x" class="mr-3">El valor de x</label>
+                        </div>
+                        <div id="feedback-4" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-4" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-5" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-5" onsubmit="event.preventDefault(); submitAnswer(5, '-5');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">5. Identificar Pendiente</h3>
+                        <p class="text-lg text-gray-700 mb-6">¿Cuál es la pendiente en <span class="font-mono bg-gray-100 px-2 rounded">y = -5x + 1</span>?</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_5" value="1" class="mr-2">1</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_5" value="5" class="mr-2">5</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_5" value="-5" class="mr-2">-5</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_5" value="x" class="mr-2">x</label>
+                        </div>
+                        <div id="feedback-5" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-5" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-6" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-6" onsubmit="event.preventDefault(); submitAnswer(6, '2');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">6. Interpretación Gráfica</h3>
+                        <p class="text-lg text-gray-700 mb-6">En <span class="font-mono bg-gray-100 px-2 rounded">y = 2x - 1</span>, si avanzas 1 a la derecha, ¿cuántas subes?</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_6" value="1" class="mr-2">1 unidad</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_6" value="2" class="mr-2">2 unidades</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_6" value="-1" class="mr-2">-1 unidad</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_6" value="0" class="mr-2">0 unidades</label>
+                        </div>
+                        <div id="feedback-6" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-6" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-7" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-7" onsubmit="event.preventDefault(); submitAnswer(7, '9');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">7. Área Inversa</h3>
+                        <p class="text-lg text-gray-700 mb-6">Si el área de un cuadrado es <strong>81 cm²</strong>, ¿cuánto mide cada uno de sus lados?</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_7" value="9" class="mr-2">9 cm</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_7" value="40.5" class="mr-2">40.5 cm</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_7" value="18" class="mr-2">18 cm</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_7" value="324" class="mr-2">324 cm</label>
+                        </div>
+                        <div id="feedback-7" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-7" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-8" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-8" onsubmit="event.preventDefault(); submitAnswer(8, 'A');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">8. Comportamiento de Rectas</h3>
+                        <p class="text-lg text-gray-700 mb-6">¿Cuál de estas ecuaciones corresponde a una recta que va <strong>"bajando"</strong> (pendiente negativa)?</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_8" value="A" class="mr-2">y = -2x + 5</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_8" value="B" class="mr-2">y = 3x</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_8" value="C" class="mr-2">y = x + 2</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_8" value="D" class="mr-2">y = 5</label>
+                        </div>
+                        <div id="feedback-8" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-8" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-9" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-9" onsubmit="event.preventDefault(); submitAnswer(9, '8');">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">9. Despeje de Fórmulas</h3>
+                        <p class="text-lg text-gray-700 mb-6">Un triángulo tiene un área de <strong>24 m²</strong> y altura de <strong>6 m</strong>. ¿Cuánto mide su base?</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_9" value="4" class="mr-2">4 m</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_9" value="8" class="mr-2">8 m</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_9" value="12" class="mr-2">12 m</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_9" value="2" class="mr-2">2 m</label>
+                        </div>
+                        <div id="feedback-9" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-9" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="lesson-10" class="lesson-container hidden-section max-w-3xl mx-auto">
+                <form id="form-10" onsubmit="event.preventDefault(); submitAnswer(10, '10'); redoexam();">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                        <h3 class="font-bold text-gray-900 text-xl mb-6">10. Signos en Funciones</h3>
+                        <p class="text-lg text-gray-700 mb-6">Evalúa <span class="font-mono bg-gray-100 px-2 rounded">f(x) = -2x + 4</span> cuando <strong>x = -3</strong>.</p>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_10" value="10" class="mr-2">10</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_10" value="-2" class="mr-2">-2</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_10" value="2" class="mr-2">2</label>
+                            <label class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50"><input type="radio" name="val_10" value="11" class="mr-2">11</label>
+                        </div>
+                        <div id="feedback-10" class="hidden mb-4 p-3 rounded-lg text-sm font-bold"></div>
+                        <button id="submit-10" type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-secondary transition-colors" >Finalizar Examen</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="results-card" class="lesson-container hidden-section max-w-xl mx-auto mt-10 text-center">
+                <div class="bg-white rounded-3xl shadow-xl p-12 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-400 mb-6 uppercase tracking-widest">Calificación Final</h2>
+                    <div class="text-9xl font-black text-primary mb-8" id="final-score-display">0.0</div>
+                    <p class="text-gray-500 font-medium text-lg mb-10">Aciertos: <span id="correct-count" class="font-bold text-gray-800">0 / 10</span></p>
+                    <div id="results-buttons" class="w-full py-4 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-primary hover:text-white transition-colors">Reiniciar Examen</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const completedLessons = new Set();
+        const unlockedLessons = new Set([1]); 
+        const totalLessons = 10; // ACTUALIZADO A 10
+        let score = 0;
+
+        document.addEventListener('DOMContentLoaded', () => switchLesson(1));
+
+        function switchLesson(lessonId) {
+            if (!unlockedLessons.has(lessonId) && lessonId !== 'results') return;
+
+            document.querySelectorAll('.lesson-container').forEach(el => {
+                el.classList.add('hidden-section');
+                el.classList.remove('active-section');
+            });
+
+            const targetId = lessonId === 'results' ? 'results-card' : 'lesson-' + lessonId;
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.classList.remove('hidden-section');
+                target.classList.add('active-section');
+            }
+
+            if (lessonId !== 'results') {
+                updateSidebarStyles(lessonId);
+            }
+        }
+
+        function updateSidebarStyles(activeId) {
+            for (let i = 1; i <= totalLessons; i++) {
+                const btn = document.getElementById('btn-' + i);
+                const dot = btn.previousElementSibling;
+
+                btn.className = "nav-btn text-left pl-4 text-sm font-medium w-full transition-colors";
+                dot.className = "absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 z-10";
+
+                if (i === activeId) {
+                    btn.classList.add('text-primary', 'font-bold');
+                    dot.classList.add('border-primary');
+                } else if (unlockedLessons.has(i)) {
+                    btn.classList.add('text-gray-500', 'hover:text-primary');
+                    dot.classList.add('border-gray-300');
+                } else {
+                    btn.classList.add('text-gray-400', 'cursor-not-allowed');
+                    dot.classList.add('border-gray-200');
+                }
+            }
+        }
+
+        function submitAnswer(currentId, correctValue) {
+            const form = document.getElementById('form-' + currentId);
+            const formData = new FormData(form);
+            const userAnswer = formData.get('val_' + currentId);
+            const feedback = document.getElementById('feedback-' + currentId);
+            const btn = document.getElementById('submit-' + currentId);
+
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const isCorrect = (userAnswer === correctValue);
+            feedback.classList.remove('hidden');
+
+            if (isCorrect) {
+                score++;
+                feedback.classList.add('bg-green-100', 'text-green-800');
+                feedback.innerHTML = "¡Correcto!";
+            } else {
+                feedback.classList.add('bg-red-100', 'text-red-800');
+                feedback.innerHTML = `Incorrecto.`;
+            }
+
+            if (!completedLessons.has(currentId)) {
+                completedLessons.add(currentId);
+                const percent = Math.round((completedLessons.size / totalLessons) * 100);
+                document.getElementById('module-progress-bar').style.width = percent + '%';
+                document.getElementById('module-progress-percentage').innerText = percent + '%';
+            }
+
+            const nextId = currentId + 1;
+            
+            if (nextId <= totalLessons) {
+                unlockedLessons.add(nextId);
+                const nextLock = document.getElementById('lock-' + nextId);
+                if(nextLock) nextLock.style.display = 'none';
+                setTimeout(() => switchLesson(nextId), 1000);
+            } else {
+                setTimeout(showFinalResults, 1000);
+            }
+        }
+
+        function showFinalResults() {
+            const finalGrade = (score / totalLessons) * 10;
+            document.getElementById('final-score-display').textContent = finalGrade.toFixed(1);
+            document.getElementById('correct-count').textContent = `${score} / ${totalLessons}`;
+
+            const passed = finalGrade >= 8;
+            const btnContainer = document.getElementById('results-buttons');
+
+            btnContainer.innerHTML = "";
+            if (passed) {
+                btnContainer.innerHTML = `
+                    <button onclick="window.location.href='/dashboard'" class="w-full py-4 bg-green-100 text-green-700 font-bold rounded-xl hover:bg-green-200 transition-colors">Finalizar y salir</button>
+        `;
+        } else {
+        btnContainer.innerHTML = `
+            <button onclick="window.location.href='/dashboard'"
+                class="w-full py-4 bg-red-100 text-red-700 font-bold rounded-xl hover:bg-red-200 transition-colors">
+                Repetir examen
+            </button>
+        `;
+            }
+
+        switchLesson('results');
+        }
+
+        function redoexam() {
+            const finalGrade = (score / totalLessons) * 10;
+            return finalGrade >=8;
+        }
+    </script>
+</body>
+</html>

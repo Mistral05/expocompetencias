@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Curso - Álgebra Avanzada</title>
+    <link rel="stylesheet" href="static/css/curso.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/funtions.js') }}"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-group">
+                    <div class="logo-icon">
+                        <img src="{{ url_for('static', filename='img/DGET.png') }}" alt="Logo DGET" />
+                    </div>
+                    <div class="logo-separator"></div> <div class="logo-icon">
+                        <img src="{{ url_for('static', filename='img/glo.png') }}" alt="Logo GLO" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <a href="/" class="nav-btn home-btn" title="Ir a página principal">
+                    
+                    <span class="btn-text">Inicio</span>
+                </a>
+
+                <a href="/perfil" target="_blank" class="login-square"  title="Mi Perfil">
+                    <span class="material-symbols-outlined"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 21C20 19.6044 20 18.9067 19.8278 18.3389C19.44 17.0605 18.4395 16.06 17.1611 15.6722C16.5933 15.5 15.8956 15.5 14.5 15.5H9.5C8.10444 15.5 7.40665 15.5 6.83886 15.6722C5.56045 16.06 4.56004 17.0605 4.17224 18.3389C4 18.9067 4 19.6044 4 21M16.5 7.5C16.5 9.98528 14.4853 12 12 12C9.51472 12 7.5 9.98528 7.5 7.5C7.5 5.01472 9.51472 3 12 3C14.4853 3 16.5 5.01472 16.5 7.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg></span>
+                </a>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="sidebar">
+                    <div class="progress-card card">
+                        <p class="progress-title">Tu Progreso</p>
+                        <div class="progress-card card">
+                            <p class="progress-title">Tu Progreso</p>
+    
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: {{ progreso_global }}%;"></div>
+                            </div>
+                            
+                            <p class="progress-percentage">{{ progreso_global }}% completado</p>
+                        </div>
+                    </div>
+
+                    <div class="course-content-card card">
+                        <h3 class="course-content-title">Contenido del Curso</h3>
+                        <ul class="module-list">
+                            <li>
+                                <details class="module-details" open>
+                                    <summary class="module-summary module-active-style"
+                                        data-module-title="Módulo 1: Ecuaciones"
+                                        data-module-description="Aprenderás los fundamentos y métodos para resolver ecuaciones de primer y segundo grado. ¡Comienza aquí tu aventura matemática!"
+                                        data-module-url="/modulouno" 
+                                        data-module-image="img/vec.png" 
+                                        onclick="selectModule(this)">
+                                        Módulo 1: Ecuaciones
+                                        <span class="icon-expand material-symbols-outlined"><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000000"><path d="M144-144v-288h72v165l477-477H528v-72h288v288h-72v-165L267-216h165v72H144Z"/></svg></span>
+                                    </summary>
+                                    <ul class="lesson-list">
+                                        <li class="lesson-item">
+                                            <span>1.1 Introducción a Ecuaciones</span>
+                                        </li>
+                                        <li class="lesson-item">
+                                            <span>1.2 Ecuaciones Lineales</span>
+                                        </li>
+                                        <li class="lesson-item">
+                                            <span>1.3 Ecuaciones Cuadráticas</span>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details class="module-details">
+                                    <summary class="module-summary"
+                                             data-module-title="Módulo 2: Funciones"
+                                             data-module-description="Descubre qué es una función, cómo se grafica y la importancia del dominio y rango para analizar datos."
+                                             data-module-url="/modulodos"
+                                             data-module-image="img/voc.png" 
+                                             onclick="selectModule(this)">
+                                        Módulo 2: Funciones
+                                        <span class="icon-expand material-symbols-outlined"><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000000"><path d="M144-144v-288h72v165l477-477H528v-72h288v288h-72v-165L267-216h165v72H144Z"/></svg></span>
+                                    </summary>
+                                    <ul class="lesson-list">
+                                        <li class="lesson-item"><span>2.1 Definición de Función</span></li>
+                                        <li class="lesson-item"><span>2.2 Gráficas Lineales</span></li>
+                                        <li class="lesson-item"><span>2.3 Dominio y Rango</span></li>
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details class="module-details">
+                                    <summary class="module-summary"
+                                             data-module-title="Módulo 3: Trigonometría"
+                                             data-module-description="Comprende las relaciones entre los ángulos y los lados de los triángulos. Esencial para la física y la ingeniería."
+                                             data-module-url="/modulotres"
+                                             data-module-image="img/vic.png" 
+                                             onclick="selectModule(this)">
+                                        Módulo 3: Geometría
+                                        <span class="icon-expand material-symbols-outlined" ><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000000"><path d="M144-144v-288h72v165l477-477H528v-72h288v288h-72v-165L267-216h165v72H144Z"/></svg></span>
+                                    </summary>
+                                    <ul class="lesson-list">
+                                        <li class="lesson-item"><span>3.1 Perímetro y Área</span></li>
+                                        <li class="lesson-item"><span>3.2 Triángulos</span></li>
+                                        <li class="lesson-item"><span>3.3 Volumen (3)</span></li>
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details class="module-details">
+                                    <summary class="module-summary"
+                                             data-module-title="Examen"
+                                             data-module-description="Resuelve el examén para aprobar el módulo"
+                                             data-module-url="/examenalgebra"
+                                             data-module-image="img/vic.png" 
+                                             onclick="selectModule(this)">
+                                        Examen
+                                        <span class="icon-expand material-symbols-outlined" ><svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#000000"><path d="M144-144v-288h72v165l477-477H528v-72h288v288h-72v-165L267-216h165v72H144Z"/></svg></span>
+                                    </summary>
+                                    <ul class="lesson-list">
+                                        <li class="lesson-item"><span>Evaluación</span></li>
+                                    </ul>
+                                </details>
+                            </li>                            
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="main-column">
+                    <div class="welcome-header">
+                        <h2 class="welcome-title">Bienvenido de nuevo, {{ nombre_usuario }}</h2>
+                        <p class="course-name">Álgebra Avanzada</p>
+                    </div>
+
+                    <div class="next-lesson-card card">
+                        <div class="lesson-image-container">
+                            <img class="lesson-image" id="current-lesson-image" src="{{ url_for('static', filename='img/vec.png') }}" alt="Ilustración representativa de Álgebra Avanzada">
+                        </img>
+                        </div>
+                        <div class="lesson-info">
+                            <p class="lesson-label">Siguiente lección
+
+                            </p>
+                            <p class="lesson-title" id="current-lesson-title">Módulo 1: Ecuaciones
+
+                            </p>
+                            <p class="lesson-description" id="current-lesson-description">
+                                Una breve descripción de lo que aprenderás en esta lección sobre funciones y sus aplicaciones.
+                            </p>
+                            <a href="#" id="continue-button" class="continue-button">Continuar
+
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="motivation-card card">
+                        <div class="motivation-text">
+                            <p class="motivation-quote">¡Sigue así, vas por buen camino!
+
+                            </p>
+                            <p class="motivation-advice">La constancia es la clave para dominar las matemáticas.
+
+                            </p>
+                        </div>
+                        <div class="trophy-image" role="img" aria-label="Ilustración de un trofeo">
+                            
+                        </div>
+                    </div>
+                </div>
+{% if diploma_disponible %}
+                <div class="diploma-download-card card mt-4">
+                    <p class="text-lg font-medium mb-2">¡Felicidades! Puedes descargar tu diploma.</p>
+                    <a href="{{ url_for('generate_pdf') }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">Descargar Diploma</a>
+                </div>
+{% endif %}
+
+            </div>
+        </main>
+    </div>
+{% include 'componentes/footer.html' %}
+</body>
+</html>
